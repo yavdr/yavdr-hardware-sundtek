@@ -1,7 +1,10 @@
-#!/bin/sh                                                                                                               
-                                                                                                                        
+#!/bin/sh
+
 if [ remove = "$1" ]; then 
-/usr/bin/signal-event addons-update
-fi
+    rm -f /etc/sundtek.conf
+    rm -f /usr/bin/sundtek.bash
+    rm -f /etc/yavdr/init/dvb-last.d/sundtek
+    restart tntnet
+fi 
 
 #DEBHELPER#

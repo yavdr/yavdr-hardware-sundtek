@@ -2,13 +2,11 @@
 
 case "$1" in
     configure)
-
-        chmod +x /usr/share/yavdr/events/actions/*
-
-        /usr/bin/signal-event addons-update
-        
-        ;;
-
+       process-template --mode=755 /etc/yavdr/init/dvb-last.d/sundtek
+	   signal-event sundtek-hardware
+#	   cp /tmp/sundtek_installer_development.sh /usr/share/doc/yavdr-installer-sundtek
+#	   rm -f /tmp/sundtek_installer_development.sh
+       ;;
 
 esac
 

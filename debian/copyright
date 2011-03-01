@@ -1,14 +1,14 @@
 Upstream Homepage:
-    https://svn.origo.ethz.ch/yavdr/trunk/yavdr-addon-vlc
+    http://www.sundtek.de/media/
 
 Upstream Author:
-    Gerald Dachs <gda@dachsweb.de>
+    sundtek
 
 Debian Maintainers:
-    Holger Schvestka <hotzenplotz5@gmx.de> 
+    Holger Schvestka <hotzenplotz5@gmx.de>
 
 Copyright:
-    (C) 2010 Gerald Dachs
+    (C) 2010 Sundtek
 
 Copyright (Debian packaging):
     (C) 2010 Holger Schvestka
@@ -16,8 +16,7 @@ Copyright (Debian packaging):
 License:
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation; either version 2 of the License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of

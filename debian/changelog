@@ -1,6 +1,6 @@
-yavdr-addon-vlc (0.3.0.1966-1yavdr1) lucid; urgency=low
+yavdr-hardware-sundtek (0.3.0.2642-1yavdr1) lucid; urgency=low
 
-  * build 
-  * Switch to dpkg-source 3.0 (quilt) format
+  * Initial release
 
- -- Holger Schvestka <hotzenplotz5@gmx.de>  Mon, 26 May 2010 10:19:06 +0200
+ -- Holger Schvestka <hotzenplotz5@gmx.de>  Sun, 13 Feb 2011 18:26:23 +0900
+
