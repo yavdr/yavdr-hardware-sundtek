@@ -1,0 +1,8 @@
+pre-start script
+    /opt/bin/mediaclient --start
+end script
+
+post-stop script
+    svdrpsend plug dynamite dtad ||:
+    /opt/bin/mediaclient --shutdown
+end script
