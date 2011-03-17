@@ -1,3 +1,0 @@
-export LD_PRELOAD=/opt/lib/libmediaclient.so
-
-rm -f /etc/ld.so.preload
