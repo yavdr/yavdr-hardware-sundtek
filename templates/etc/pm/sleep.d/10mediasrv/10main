@@ -1,5 +1,3 @@
-#!/bin/sh
-
 case $1 in
      hibernate|suspend)
          echo "sundtek is going to sleep"
@@ -12,4 +10,3 @@ case $1 in
      *)  echo "Not a possible option."
          ;;
 esac
-
