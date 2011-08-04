@@ -1,4 +1,4 @@
-YAVDRWEBDIR=../../../../webfrontend/yavdr-webfrontend/yavdrweb-ng/
+YAVDRWEBDIR=../../yavdr-webfrontend/yavdrweb-ng/
 
 all: sundtek.so
 
