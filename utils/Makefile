@@ -1,5 +1,6 @@
 CFLAGS=-g -fPIC -I.. 
-LDLIBS=-L/usr/lib/yavdr -lyavdrdb -lneo_utl -L/opt/lib -lmcsimple -lmediaclient
+LDLIBS=-L/usr/lib/yavdr -lyavdrdb -lneo_utl -L/opt/lib -lmcsimple
+
 all: scansundtek sundtekadapter
 
 .c.o:
