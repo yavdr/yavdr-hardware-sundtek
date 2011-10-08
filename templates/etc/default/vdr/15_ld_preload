@@ -1,5 +1,5 @@
 if [ -e /opt/lib/libmediaclient.so ]; then
-   export LD_PRELOAD=/opt/lib/libmcsimple.so:/opt/lib/libmediaclient.so
+   export LD_PRELOAD=/opt/lib/libmediaclient.so
 fi
 
 # this is to late...

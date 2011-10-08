@@ -1,5 +1,54 @@
-device_attach=/usr/bin/attach_sundtek.sh -d DEVID
-device_detach=/usr/bin/detach_sundtek.sh -d DEVID
+# ----- Section for adapter with [SERIALNUMBER] -----
+#Get adapter serial number with /opt/bin/mediaclient -e
+#[SERIALNUMBER]
+
+#Description register as dreambox tuner
+#dreambox_support_fe1=[on|off]      #default: off
+
+#Infrared protocol to use
+#ir_protocol=[RC5|NEC|RC6]          #default: NEC
+
+#Keymap to use, e.g. "/lib/udev/rc_keymaps/vp702x"
+#rcmap=[PATH_TO_KEYMAP]         #default: keymap which comes with the device
+
+#Choose initial DVB mode for hybrid DVB-T/DVB-C devices only
+#initial_dvb_mode=[DVBC|DVBT]
+
+#Call attach script when new device appears
+#device_attach=[PATH_TO_SCRIPT] [PARAMETER|DEVID]   #"DEVID" will automatically be replaced with the device ID
+
+#Call detach script when device disappears
+#device_detach=[PATH_TO_SCRIPT] [PARAMETER|DEVID]   #"DEVID" will automatically be replaced with the device ID
+
+#disable_atv=[0|1]                                      #disable initialization of analogTV Frontend
+#Initial Audio Volume level for DVB-C/T Hybrid devices
+#volume=[0-127]             #default: 118
+
+# WSS callback (see http://en.wikipedia.org/wiki/Widescreen_signaling)
+# trigger script when the videoformat changes between 16:9 or 4:3
+#wss_callback=[scriptname]
+#   WSS_4_3_FULL
+#   WSS_14_9_LETTERBOX_CENTRE
+#   WSS_14_9_LETTERBOX_TOP
+#   WSS_16_9_LETTERBOX_CENTRE
+#   WSS_16_9_LETTERBOX_TOP
+#   WSS_16_9_LETTERBOX_DEEPER
+#   WSS_14_9_FULL_HEIGHT_4_3
+#   WSS_16_9_FULL_HEIGHT_16_9
+#   WSS_UNABLE_TO_DEMODULATE
+
+#Timeout in ms after that WSS_UNABLE_TO_DEMODULATE will be called
+#wss_demodulation_timeout=[MILLISECONDS][/code]
+
+#vtuner_skip0=vtuner0                  # skip /dev/misc/vtuner0 can also be vtunerN
+#vtuner_skip1=vtuner1                  # skip /dev/misc/vtuner1 can also be vtunerN
+
+#fe_helper=/path/to/channellist        # override frequency setup and use parameters from channellist
+                                       # VDR channellists can be used here (eg. created by w_scan)
+                                       # this somewhat guarantees high speed channel switching
+                                       # when used with a lousy player
+                                       # Astra 19.2 Channellist: 1)
+
 <?cs each:item = system.hardware.sundtek.stick ?><?cs if:(item.mode) ?>
 [<?cs var:item.info.serial?>]
 device_attach=/usr/bin/attach_sundtek.sh -d DEVID

@@ -11,12 +11,7 @@ rm -f /etc/avahi/services/sundtek*.service
 
 [ -r /etc/default/sundtek ] && . /etc/default/sundtek
 
-# enable network 
-if [ "x$ENABLE_NETWORK" = "x1" -a "X`dbget system.hardware.sundtek.enablenetwork`" = "X1" ]; then
-    /opt/bin/mediaclient --enablenetwork=on
-else
-    /opt/bin/mediaclient --enablenetwork=off
-fi
+# enable network is done by sundtedtek.conf now
 
 # scan for sundteks after staring driver
 /usr/bin/scansundtek -v -w 30
