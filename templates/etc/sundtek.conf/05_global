@@ -1,0 +1,46 @@
+# based on 
+# http://wiki.sundtek.de/index.php/TreiberKonfiguration
+
+# ----- GLOBAL SECTION -----
+#Set loglevel for logging to /var/log/mediasrv.log
+#loglevel=[off|min|max]                 #default: min
+                                        #max .. little bit more debug
+loglevel=off
+
+#use_hwpidfilter=[on|off]               #For DVB-C, DVB-T, DVB-S/S2
+                                        #enable PID filter, please be careful with that, there are only 15 HW Pid filters available
+                                        #when more than 15 pids are set up the pid filter will be disabled automatically
+
+#dmhwpidfilter=[on|off]                 #default on, in some cases off might be useful to disable hw pid filter for settopboxes
+                                        #if you get a black image when capturing a TV channel and watching another channel on the
+                                        #same transponder - try this option and reboot
+
+#usb_transaction_delay=[0-20]           #throttle the USB setup transactions, this can solve problems with weak USB stacks for
+                                        #example for embedded boards, unit is milliseconds
+
+#usb_timeout=[0 - N]                    #USB timeout for each transaction in milliseconds, 0 default infinite
+#voltage_tone_off=[1 or 0]              #0 .. default, normal behaviour
+                                        #1 .. force DVB-S/S2 to not use any Voltage or Tone (ignore any user parameters)
+                                        
+#ir_disabled=[1 or 0]                   #0 .. enable remote control polling, the driver will permanently check for remote control keys
+                                        #1 .. disable remote control polling, might fix bugs with weak USB stacks on embedded boards
+
+
+#Enable listening on network
+#enablenetwork=[on|off]                 #default: off
+enablenetwork=<?cs if:(system.hardware.sundtek.enablenetwork == "1") ?>on<?cs else ?>off<?cs /if ?>
+
+#Lowest adapter number to start with, e.g. /dev/dvb/adapter5/frontend0
+#first_adapter=5
+
+#Call attach script when new device appears
+#device_attach=[PATH_TO_SCRIPT] [PARAMETER|DEVID]   #"DEVID" will automatically be replaced with the device ID
+device_attach=/usr/bin/attach_sundtek.sh -d DEVID
+
+#Call detach script when device disappears
+#device_detach=[PATH_TO_SCRIPT] [PARAMETER|DEVID]   #"DEVID" will automatically be replaced with the device ID
+device_detach=/usr/bin/detach_sundtek.sh -d DEVID
+
+#Dreambox especially for DM800HD (not SE!)
+#vtuner_acceleration=[on|off]                           #default off, accelerate Dreambox 800HD datatransfer between USB Stick and
+                                                        #DM800HD
