@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include <sundtek/mcsimple.h>
+#include <sundtek/mediacmds.h>
 
 //#include "mcsimple.h"
 //#include "mediaclient.h"
