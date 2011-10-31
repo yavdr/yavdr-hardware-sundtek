@@ -2,9 +2,8 @@
 #include <stdlib.h>
 
 #include <sundtek/mcsimple.h>
-
-//#include "mcsimple.h"
-//#include "mediaclient.h"
+#include <sundtek/mediacmds.h>
+#include <sundtek/mediaclient.h>
 
 #define TRUE 1
 

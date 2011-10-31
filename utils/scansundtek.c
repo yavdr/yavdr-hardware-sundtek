@@ -11,6 +11,8 @@
 #include <unistd.h>
 
 #include <sundtek/mcsimple.h>
+#include <sundtek/mediacmds.h>
+#include <sundtek/mediaclient.h>
 
 #include <yavdr/db-utils/dbset.h>
 #include <yavdr/db-utils/dbremove.h>
