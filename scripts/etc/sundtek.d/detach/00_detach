@@ -12,7 +12,7 @@ DEV=`/usr/bin/dbget system.hardware.sundtek.frontend.$DEVID`
 SERIAL=`/usr/bin/dbget system.hardware.sundtek.serials.$DEVID`
 
 if [ -n "$DEV" ]; then
-  vdr-dbus-send /Plugins/dynamite plugin.SVDRPCommand string:'DTAD' string:"$DEV"
+  vdr-dbus-send /Plugins/dynamite plugin.SVDRPCommand string:'FDTD' string:"$DEV"
 fi
 
 if [ -n "$SERIAL" ]; then
