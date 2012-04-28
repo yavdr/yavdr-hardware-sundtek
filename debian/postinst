@@ -5,8 +5,11 @@ case "$1" in
 	   signal-event sundtek-hardware
 #	   cp /tmp/sundtek_installer_development.sh /usr/share/doc/yavdr-installer-sundtek
 #	   rm -f /tmp/sundtek_installer_development.sh
-       ;;
+        ;;
 
+    triggered)
+            sed -i 's#/opt/lib/libmediaclient.so.*$##' /etc/ld.so.preload
+        ;;
 esac
 
 # dh_installdeb will replace this with shell code automatically
