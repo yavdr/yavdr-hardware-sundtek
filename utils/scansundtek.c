@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <sundtek/mcsimple.h>
 #include <sundtek/mediacmds.h>
@@ -230,7 +231,7 @@ int main(int argc, char *argv[]) {
 			break;
 		case 'w':
 			wait = strtol(optarg, NULL, 10);
-			while((fd = net_connect()) < 0 && wait-- > 0) {
+			while((fd = net_connect(O_CLOEXEC)) < 0 && wait-- > 0) {
 				if (verbose) {
 					syslog(LOG_INFO, "waiting for sundtek daemon");
 					printf("waiting for sundtek daemon\n");
@@ -386,7 +387,7 @@ int main(int argc, char *argv[]) {
 		if (verbose) {
 			printf("\nlocal scan:\n");
 		}
-		fd = net_connect();
+		fd = net_connect(O_CLOEXEC);
 		if (fd < 0) {
 			if (verbose) {
 				syslog(LOG_ERR, "can't connect to daemon");
@@ -410,7 +411,7 @@ int main(int argc, char *argv[]) {
 	} else {
 		if (attach == 1) { // new device is attached
 
-			fd = net_connect();
+			fd = net_connect(O_CLOEXEC);
 			if (fd < 0) {
 				if (verbose) {
 					syslog(LOG_ERR, "can't connect to daemon");
