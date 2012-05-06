@@ -1,5 +1,26 @@
 script
-<?cs each:item = system.hardware.sundtek.found ?><?cs if:(system.hardware.sundtek.stick[item].static == "1" && ?system.hardware.sundtek.stick[item].info.ip) ?>
-/opt/bin/mediaclient --mount=<?cs var:system.hardware.sundtek.stick[item].info.ip ?>:<?cs var:system.hardware.sundtek.stick[item].info.id ?>
-<?cs /if ?><?cs /each ?>
+
+LOOPCNT=0
+MAXLOOPCNT=50
+
+MOUNT_POINTS=(\
+<?cs each:item = system.hardware.sundtek.found ?><?cs if:(system.hardware.sundtek.stick[item].static == "1" && ?system.hardware.sundtek.stick[item].info.ip) ?><?cs var:system.hardware.sundtek.stick[item].info.ip ?>:<?cs var:system.hardware.sundtek.stick[item].info.id ?> \
+<?cs /if ?><?cs /each ?>)
+
+while [ $LOOPCNT -le $MAXLOOPCNT ]; do
+        LOOPCNT=$((LOOPCNT + 1))
+        NOT_MOUNTED=( )
+        for MP in "${MOUNT_POINTS[@]}"; do
+                if ! /opt/bin/mediaclient --mount=$MP; then
+                        NOT_MOUNTED[${#NOT_MOUNTED[*]}]=$MP
+                fi
+        done
+        if [ ${#NOT_MOUNTED[*]} -eq 0 ]; then
+                break
+        else
+                MOUNT_POINTS=( "${NOT_MOUNTED[@]}" )
+                sleep 1
+        fi
+done
+
 end script
