@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #include <sundtek/mcsimple.h>
 #include <sundtek/mediacmds.h>
