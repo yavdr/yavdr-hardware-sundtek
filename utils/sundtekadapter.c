@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 	int d = 0;
 	int fd;
 	struct media_device_enum *device;
-	fd = net_connect(O_CLOEXEC);
+	fd = net_connect(0);
 	if (fd < 0)
 		return fd;
 
