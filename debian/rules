@@ -32,18 +32,25 @@ clean:
 install: build
 	dh_testdir
 	dh_testroot
-	dh_prep  
+	dh_prep
 	dh_installdirs
 
 	# Add here commands to install the package into debian/yavdr-utils.
 	$(MAKE) DESTDIR=$(CURDIR)/debian/yavdr-hardware-sundtek install
 
-binary-common:
+
+# Build architecture-independent files here.
+binary-indep: install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs 
+	dh_installchangelogs
 	dh_installdocs
 	dh_installexamples
+	dh_installman
 	dh_link
 	dh_strip
 	dh_compress
@@ -53,14 +60,6 @@ binary-common:
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
-
-# Build architecture-independent files here.
-binary-indep: build install
-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-
-# Build architecture-dependent files here.
-binary-arch: build install
-	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 
 binary: binary-indep binary-arch
 
