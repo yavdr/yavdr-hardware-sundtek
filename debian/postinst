@@ -8,7 +8,7 @@ case "$1" in
         ;;
 
     triggered)
-            sed -i 's#/opt/lib/libmediaclient.so.*$##' /etc/ld.so.preload
+            sed -i 's#/opt/lib/libmediaclient.so.*$##' /etc/ld.so.preload 2>/dev/null||:
         ;;
 esac
 
