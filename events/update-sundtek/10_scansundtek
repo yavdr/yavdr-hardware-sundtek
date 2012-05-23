@@ -1,5 +1,1 @@
-#/bin/bash
-
-/usr/bin/scansundtek
-
-process-template /etc/sundtek.conf
+../actions/scansundtek
