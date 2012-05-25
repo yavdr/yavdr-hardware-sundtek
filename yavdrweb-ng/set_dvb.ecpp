@@ -52,6 +52,11 @@ for (serials_type::const_iterator it = serials.begin(); it != serials.end(); ++i
 		} else {
 			dbremove(("system.hardware.sundtek.stick." + serial + ".mount").c_str());
 			dbremove(("system.hardware.sundtek.stick." + serial + ".static").c_str());
+			string mounted = dbget((char *)("system.hardware.sundtek.stick." + serial + ".mounted").c_str(), (char *)"");
+			if (mounted != "") {
+				system( ("/opt/bin/mediaclient --unmount " +  mounted).c_str() );
+				dbremove(("system.hardware.sundtek.stick." + serial + ".mounted").c_str());
+			}
 		}
 		string _static = qparam[serial + "|static"];
 		if (_static == "1") {
