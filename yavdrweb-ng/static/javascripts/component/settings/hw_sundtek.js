@@ -139,6 +139,8 @@ YaVDR.Component.Settings.HwSundtek.Hardware = Ext.extend(YaVDR.Default.Form, {
             xtype: 'checkbox',
             fieldLabel: _('mount device'),
             name: serial + '|mount',
+            itemId: serial + '|mount',
+            id: serial + '|mount',
             serial: serial,
             inputValue: 1,
             disabled: !found,
@@ -149,8 +151,11 @@ YaVDR.Component.Settings.HwSundtek.Hardware = Ext.extend(YaVDR.Default.Form, {
                 var e = Ext.getCmp(cb.serial + '|static');
                 if (checked) {
                   e.enable();
+                  if (e.avahi == 0) 
+                	  e.setValue(true);
                 } else {
-                  e.disable().setValue(false);
+                  e.setValue(false);
+                  e.disable();
                 }
               }
             }
@@ -163,8 +168,18 @@ YaVDR.Component.Settings.HwSundtek.Hardware = Ext.extend(YaVDR.Default.Form, {
             itemId: serial + '|static',
             id: serial + '|static',
             inputValue: 1,
+            serial: serial,
+            avahi: (item.avahi?1:0),
             disabled: (item.mount != 1),
-            checked: (item.static == 1)
+            checked: (item.static == 1 || item.avahi == 0),
+            listeners: {
+              scope: this,
+              check: function(cb, checked) {
+            	var e = Ext.getCmp(cb.serial + '|mount');
+                if (cb.avahi == 0) 
+                  cb.setValue(e.getValue());
+              }
+            }
           });
 
           items.push({
@@ -216,7 +231,8 @@ YaVDR.Component.Settings.HwSundtek.Hardware = Ext.extend(YaVDR.Default.Form, {
         this.insert(this.items.length, {
           itemData: item,
           itemId: serial + '|sundtek',
-          title: item.info.devicename + (typeof item.info.ip != "undefined"?' @ ' + item.info.ip + ':' + item.info.id:_(' (local)')),
+          title: item.info.devicename + (typeof item.info.ip != "undefined"?' @ ' + item.info.ip + ':' + item.info.id:_(' (local)')) 
+            + (item.avahi?" ("+_("avahi support detected")+")":""),
           items: items
         }); 
       }
