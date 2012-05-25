@@ -31,4 +31,5 @@ if [ -n "$LOCALID" ]; then
 
     /usr/bin/dbremove system.hardware.sundtek.frontend.$LOCALID
     /usr/bin/dbremove system.hardware.sundtek.stick.${SERIAL}_${SKEY}.mounted
+    /usr/bin/dbremove system.hardware.sundtek.stick.${SERIAL}_${SKEY}.avahi
 fi

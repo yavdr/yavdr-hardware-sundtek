@@ -20,6 +20,7 @@ done
 
 SKEY=`echo "$ADDRESS" | sed s/\\\\./_/g`
 ID=`/usr/bin/sundtekadapter -s ${SERIAL} --remoteonly -o id`
+dbset "system.hardware.sundtek.stick.${SERIAL}_${SKEY}.avahi=1"
 
 if [ "X`dbget system.hardware.sundtek.stick.${SERIAL}_${SKEY}.mount`" = "X1" \
     -a -z "${ID}" ]; then
