@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <syslog.h>
+//#include <syslog.h>
 
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -142,7 +142,7 @@ void writeDevice2HDF(struct media_device_enum *device, int *count) {
 	char _serial[100];
 
 	if (verbose) {
-		syslog(LOG_INFO, "device found - %s", device->devicename);
+		//syslog(LOG_INFO, "device found - %s", device->devicename);
 		printf("\tdevice found - %s", device->devicename);
 	}
 	convertSerial(_serial, device->serial);
@@ -181,7 +181,7 @@ void writeDevice2HDF(struct media_device_enum *device, int *count) {
 		//dbset("system.hardware.sundtek.%s.info.serial=%s", device->serial, device->serial);
 	} else {
 		if (verbose) {
-			syslog(LOG_INFO, "mounted device %s", device->devicename);
+			//syslog(LOG_INFO, "mounted device %s", device->devicename);
 			printf(" - mounted device");
 		}
 		//dbset("system.hardware.sundtek.stick.%s.mounted=%i", _serial, device->id);
@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
 		case 'v':
 			verbose = 1;
 
-			openlog("scansundtek", LOG_PID | LOG_CONS, LOG_USER);
+			//openlog("scansundtek", LOG_PID | LOG_CONS, LOG_USER);
 			break;
 		case 'd':
 			deviceId = strtol(optarg, NULL, 10);
@@ -233,7 +233,7 @@ int main(int argc, char *argv[]) {
 			wait = strtol(optarg, NULL, 10);
 			while((fd = net_connect(0)) < 0 && wait-- > 0) {
 				if (verbose) {
-					syslog(LOG_INFO, "waiting for sundtek daemon");
+					//syslog(LOG_INFO, "waiting for sundtek daemon");
 					printf("waiting for sundtek daemon\n");
 				}
 				sleep(1);
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
 				net_close(fd);
 			else {
 				if (verbose) {
-					syslog(LOG_ERR, "timeout waiting for sundtek daemon");
+					//syslog(LOG_ERR, "timeout waiting for sundtek daemon");
 					printf ("timeout waiting for sundtek daemon\n");
 				}
 				exit(1);
@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
 		while (media_scan_info(obj, n, "ip", (void**) &ip) == 0) {
 			media_scan_info(obj, n, "id", (void**) &id);
 			if (verbose) {
-				syslog(LOG_INFO, "device found at %s:%s - ", ip, id);
+				//syslog(LOG_INFO, "device found at %s:%s - ", ip, id);
 				printf("\tdevice found at %s:%s - ", ip, id);
 			}
 			// checking local interfaces
@@ -365,13 +365,13 @@ int main(int argc, char *argv[]) {
 					}
 				} else {
 					if (verbose) {
-						syslog(LOG_INFO, "ignored remote mounted device");
+						//syslog(LOG_INFO, "ignored remote mounted device");
 						printf("ignored remote mounted device");
 					}
 				}
 			} else {
 				if (verbose) {
-					syslog(LOG_INFO, "ignored local device");
+					//syslog(LOG_INFO, "ignored local device");
 					printf("ignored local device");
 				}
 			}
@@ -390,7 +390,7 @@ int main(int argc, char *argv[]) {
 		fd = net_connect(0);
 		if (fd < 0) {
 			if (verbose) {
-				syslog(LOG_ERR, "can't connect to daemon");
+				//syslog(LOG_ERR, "can't connect to daemon");
 				printf("\tcan't connect to daemon!\n");
 			}
 			return fd;
@@ -414,7 +414,7 @@ int main(int argc, char *argv[]) {
 			fd = net_connect(0);
 			if (fd < 0) {
 				if (verbose) {
-					syslog(LOG_ERR, "can't connect to daemon");
+					//syslog(LOG_ERR, "can't connect to daemon");
 					printf("\tcan't connect to daemon!\n");
 				}
 				return fd;

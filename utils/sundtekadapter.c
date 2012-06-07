@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 	if (fd < 0)
 		return fd;
 
-	while ((device = net_device_enum(fd, &i, d)) != 0) {
+	while (found == 0 && (device = net_device_enum(fd, &i, d)) != 0) {
 		do {
 			if (device->id == deviceId) {
 				found = 1;
@@ -116,10 +116,10 @@ int main(int argc, char *argv[]) {
 					printf("%u\n", device->id);
 					break;
 				}
-				if (found == 1) found = 0;
+				//if (found == 1) found = 0;
 			}
 			free(device);
-		} while ((device = net_device_enum(fd, &i, ++d)) != 0);
+		} while (found == 0 && (device = net_device_enum(fd, &i, ++d)) != 0);
 		d = 0;
 		i++;
 	}
