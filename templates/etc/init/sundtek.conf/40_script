@@ -1,8 +1,10 @@
 pre-start script
     /opt/bin/mediaclient --start
+    vdr-dbus-send /Plugins/sundtek plugin.Service string:'sundtek-Monitor-v0.1' string:'start' ||:
 end script
 
 post-stop script
     vdr-dbus-send /Plugins/dynamite plugin.SVDRPCommand string:'DTAD' string:'force' ||:
     /opt/bin/mediaclient --shutdown
+    vdr-dbus-send /Plugins/sundtek plugin.Service string:'sundtek-Monitor-v0.1' string:'stop' ||:
 end script
