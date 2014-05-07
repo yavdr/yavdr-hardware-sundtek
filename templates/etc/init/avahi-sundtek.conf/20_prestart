@@ -1,0 +1,13 @@
+pre-start script
+
+  # stop job from continuing if no config file found for daemon
+  [ ! -f /etc/default/avahi-sundtek ] && { stop; exit 0; }
+
+  # source the config file
+  . /etc/default/avahi-sundtek
+
+  # stop job from continuing if admin has not enabled service in
+  # config file.
+  [ -z "$ENABLED" ] && { stop; exit 0; }
+
+end script
