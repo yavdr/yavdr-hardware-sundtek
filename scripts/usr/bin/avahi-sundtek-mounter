@@ -182,7 +182,7 @@ def signal_handler(signal, frame):
 gettext.install('vdr-addon-avahi-mounter', '/usr/share/locale', unicode=1)
 
 # initialize logging
-openlog('avahi-mounter', LOG_PID, LOG_USER)
+openlog('avahi-sundtek-mounter', LOG_PID, LOG_USER)
 
 # load config options
 config = Config()
