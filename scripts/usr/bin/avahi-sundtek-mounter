@@ -1,0 +1,201 @@
+#!/usr/bin/python
+
+"""Simple Zeroconf service publication. Copyright 2008, Pierre of
+stackp.online.fr. License appears to be "Do whatever you want".
+Original code at http://stackp.online.fr/?p=35
+"""
+
+from __future__ import with_statement
+
+import threading
+# import functools
+import time
+import os
+import sys
+import signal
+import subprocess
+import avahi
+import gobject
+import dbus
+import socket
+import syslog
+import gettext
+import ConfigParser
+from syslog import *
+from dbus import DBusException
+from dbus.mainloop.glib import DBusGMainLoop
+from contextlib import closing
+
+__all__ = ["ZeroconfBrowser"]
+
+
+class ZeroconfBrowser(object):
+    def __init__(self, loop=None):
+        self.localhost = socket.gethostname()
+        self.local_loop = False
+        if loop is None:
+            gobject.threads_init()
+            loop = DBusGMainLoop()
+            self.local_loop = True
+        self.bus = dbus.SystemBus(mainloop=loop)
+
+        self.server = dbus.Interface(
+            self.bus.get_object(avahi.DBUS_NAME, '/'),
+            'org.freedesktop.Avahi.Server')
+
+        self.lock = threading.Lock()
+        self.mounts = {}
+        syslog("initialized zeroconf browser on %s" % self.localhost)
+
+    def close(self):
+        syslog("shutting down avahi-mounter")
+        allMounts = self.mounts.copy()
+        for name in allMounts:
+            with self.lock:
+                mount = self.mounts.get(name, None)
+                if mount is not None:
+                   syslog("umounting %s at shutdown" % mount.local)
+                   mount.unuse()
+                   del self.mounts[name]
+
+
+    def __call__(self):
+        if self.local_loop:
+            gobject.MainLoop().run()
+
+    def browse(self,
+           type,
+           interface=avahi.IF_UNSPEC,
+           protocol=avahi.PROTO_UNSPEC,
+           domain='local',
+           flags=dbus.UInt32(0)):
+        with self.lock:
+            sbrowser = dbus.Interface(
+                self.bus.get_object(
+                    avahi.DBUS_NAME,
+                    self.server.ServiceBrowserNew(
+                        interface,
+                        protocol,
+                        type,
+                        domain,
+                        flags)
+                    ),
+                avahi.DBUS_INTERFACE_SERVICE_BROWSER)
+
+            sbrowser.connect_to_signal("ItemNew", self.resolve)
+            sbrowser.connect_to_signal("Failure", self.browse_error)
+
+    def resolve(self, interface, protocol, name,
+                type, domain, aprotocol, flags=dbus.UInt32(0)):
+        with self.lock:
+            self.server.ResolveService(
+                interface, protocol, name,
+                type, domain, avahi.PROTO_UNSPEC, dbus.UInt32(0), 
+                reply_handler=self.resolved, error_handler=self.resolve_error)
+
+    def resolved(self, interface, protocol, name, type,
+                 domain, host, aprotocol, address,
+                 port, txt, flags):
+
+        syslog("Resolved type %s on %s" % (type, host))
+
+        if self.localhost == host.split(".")[0]:
+            return
+
+        if type == '_dvb._tcp':
+            try:
+                device = DvbDevice(host, address, txt)
+                device.use()
+                self.mounts[name] = device
+            except Exception, error:
+                syslog("ERROR: %s" % error)
+        syslog("Service resolved: %s to %s" % (host, name))
+        
+    def resolve_error(self, exception):
+        syslog("Resolution error:", exception)
+
+    def browse_error(self, *args, **kwargs):
+        syslog("Browse Error:", args, kwargs)
+
+class DvbDevice:
+    def __init__(self, host, address, txt):
+        syslog("DvbDevice created")
+        device = []
+        serial = []
+        for t in txt:
+            x = "".join((chr(c) for c in t))
+            (key, value) = x.split("=")
+            if key == "id":
+                device = value
+            elif key == "serial":
+                serial = value
+        self.__host = host
+        self.__address = address
+        self.__device = device
+        self.__serial = serial
+        self.local = address + ":" + device
+
+        syslog("dvbdevice on %s/%s:%s (serial %s)" % (host, address, device, serial))
+
+    def use(self):
+        syslog("create dvb")
+        try:
+            subprocess.call(["/usr/bin/mount_sundtek.sh", 
+                 "-h", self.__host,
+                 "-a", self.__address,
+                 "-d", self.__device,
+                 "-s", self.__serial])
+        except OSError as (errno, strerror):
+            syslog("unable to mount: %s" % strerror)
+            return
+
+    def unuse(self):
+        syslog("remove dvb")
+        try:
+            subprocess.call(["/usr/bin/unmount_sundtek.sh", 
+                 "-h", self.__host,
+                 "-a", self.__address,
+                 "-d", self.__device,
+                 "-s", self.__serial])
+        except OSError as (errno, strerror):
+            syslog("unable to unmount: %s" % strerror)
+            return
+
+
+class Config:
+    def __init__(self):
+        self.values = {}
+        self.config = ConfigParser.ConfigParser()
+        self.config.readfp(open('/etc/default/avahi-mounter'))
+        self.config.read(['/var/lib/vdr/.avahi-mounter',
+                  os.path.expanduser('~vdr/.avahi-mounter')])
+
+        if self.config.getboolean("base", "enabled") is not True:
+            syslog("avahi-mounter is disabled")
+            sys.exit()
+
+            
+def signal_handler(signal, frame):
+        sys.exit(0)
+
+# initialize gettext
+gettext.install('vdr-addon-avahi-mounter', '/usr/share/locale', unicode=1)
+
+# initialize logging
+openlog('avahi-mounter', LOG_PID, LOG_USER)
+
+# load config options
+config = Config()
+
+
+# start main loop
+browser = ZeroconfBrowser()
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+
+with closing(browser) as avahiMounter:
+    avahiMounter.browse('_dvb._tcp')
+    avahiMounter()
+
