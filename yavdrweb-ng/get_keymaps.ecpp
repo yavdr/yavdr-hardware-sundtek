@@ -1,0 +1,65 @@
+<%pre>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <ctype.h>
+#include <ClearSilver.h>
+#include <yavdr/common.h>
+#include <jsoncpp/json.hpp>
+
+using namespace std;
+</%pre><& authenticate@yavdrweb ><%cpp>
+	reply.setHeader ("Cache-Control", "no-cache", false);
+	reply.setHeader ("Content-Type", "application/json", false);
+
+	string str;
+	int index = 1;
+	HDF *hdf = NULL;
+	NEOERR *err;
+        string directories[] = {"/lib/udev/rc_keymaps/"};
+
+#define PREFIX "sundtek"
+
+	//get current lirc settings from database
+	if (((err = hdf_init(&hdf)) != STATUS_OK) || ((err = hdf_read_file(hdf, YAVDRDB)) != STATUS_OK))
+	{
+		nerr_log_error(err);
+	}
+	else
+	{
+
+	}
+
+	Json::Value list;
+	list[0u]["key"] = "map_none";
+	list[0u]["name"] = "none";
+	list[0u]["dir"] = "";
+
+	DIR *dp;
+	struct dirent *dirp;
+	vector<string> files;
+
+	for (unsigned int i = 0; i < sizeof(directories) / sizeof(directories[0]); i++) {
+	  if ((dp  = opendir(directories[i].c_str())) == NULL) {
+		break;
+	  }
+
+	  while ((dirp = readdir(dp)) != NULL) {
+		if ((strlen(dirp->d_name) > 7) &&
+				std::string(dirp->d_name).find(PREFIX) == 0) {
+			list[index]["key"] = "map_"+string(dirp->d_name);
+			list[index]["dir"] = directories[i];
+			list[index]["name"] = string(dirp->d_name);
+			index++;
+		}
+	  }
+	  closedir(dp);
+	}
+
+    Json::Value json;
+    json["keymaps"] = list;
+    reply.out() << json;
+
+</%cpp>

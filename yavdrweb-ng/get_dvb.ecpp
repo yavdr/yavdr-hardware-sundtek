@@ -38,8 +38,36 @@ if (((err = hdf_init(&hdf)) != STATUS_OK) || ((err = hdf_read_file(hdf, YAVDRDB)
   nerr_log_error(err);
 } else {
 	reply.setHeader ("Content-Type", "application/json", false);
-	
+
 	Json::Value json;
+
+    // das mus in die json["metaData"]["fields"] und zwar als array
+	// [{ name: 'id', type: 'integer' }, 'name', 'information', { name: 'length', type: 'integer' }]
+/*
+	json["metaData"]["root"]  = "data";
+	json["metaData"]["idProperty"]  = "id";
+	json["metaData"]["totalProperty"]  = "total";
+
+	json["metaData"]["fields"][0u]["name"] = "id";
+	json["metaData"]["fields"][0u]["type"] = "integer";
+	json["metaData"]["fields"][1u] = "name";
+	json["metaData"]["fields"][2u] = "file_name";
+	json["metaData"]["fields"][3u]["name"] = "is_new";
+	json["metaData"]["fields"][3u]["type"] = "boolean";
+	json["metaData"]["fields"][4u]["name"] = "is_edited";
+	json["metaData"]["fields"][4u]["type"] = "boolean";
+	json["metaData"]["fields"][5u]["name"] = "is_pes_recording";
+	json["metaData"]["fields"][5u]["type"] = "boolean";
+	json["metaData"]["fields"][6u]["name"] = "duration";
+	json["metaData"]["fields"][6u]["type"] = "integer";
+	json["metaData"]["fields"][7u] = "event_title";
+	json["metaData"]["fields"][8u] = "event_short_text";
+	json["metaData"]["fields"][9u] = "event_description";
+	json["metaData"]["fields"][10u]["name"] = "event_start_time";
+	json["metaData"]["fields"][10u]["type"] = "integer";
+	json["metaData"]["fields"][11u]["name"] = "event_duration";
+	json["metaData"]["fields"][11u]["type"] = "integer";
+	*/
 	HDF *start = hdf_get_obj(hdf, (char *)"system.hardware.sundtek");
 	if (start != NULL) {
 		hdfwalk(hdf, start, &json, false);
@@ -47,6 +75,6 @@ if (((err = hdf_init(&hdf)) != STATUS_OK) || ((err = hdf_read_file(hdf, YAVDRDB)
 	} else {
 		reply.out() << "false";
 	}
-	
+
 }
 </%cpp>
