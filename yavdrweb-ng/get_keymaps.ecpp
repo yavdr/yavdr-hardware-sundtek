@@ -33,9 +33,9 @@ using namespace std;
 	}
 
 	Json::Value list;
-	list[0u]["key"] = "map_none";
+	list[0u]["key"] = "none";
 	list[0u]["name"] = "none";
-	list[0u]["dir"] = "";
+	list[0u]["file"] = "";
 
 	DIR *dp;
 	struct dirent *dirp;
@@ -49,8 +49,8 @@ using namespace std;
 	  while ((dirp = readdir(dp)) != NULL) {
 		if ((strlen(dirp->d_name) > 7) &&
 				std::string(dirp->d_name).find(PREFIX) == 0) {
-			list[index]["key"] = "map_"+string(dirp->d_name);
-			list[index]["dir"] = directories[i];
+			list[index]["key"] = directories[i]+string(dirp->d_name);
+			list[index]["file"] = directories[i];
 			list[index]["name"] = string(dirp->d_name);
 			index++;
 		}

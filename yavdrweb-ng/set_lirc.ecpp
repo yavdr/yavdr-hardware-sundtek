@@ -1,0 +1,51 @@
+<%pre>
+#include <stdlib.h>
+#include <string>
+#include <ctype.h>
+
+
+extern "C" {
+	#include <yavdr/db-utils/dbset.h>
+	#include <yavdr/db-utils/dbget.h>
+	#include <yavdr/db-utils/dbremove.h>
+};
+
+#include <yavdr/common.h>
+#include <jsoncpp/json.hpp>
+
+using namespace std;
+</%pre><& authenticate@yavdrweb ><%args>
+string serials[];
+</%args><%cpp>
+
+string success = "false";
+
+
+for (serials_type::const_iterator it = serials.begin(); it != serials.end(); ++it) {
+	string serial = (*it);
+
+	string isRemote = dbget((char *)("system.hardware.sundtek.stick." + serial + ".info.capabilities.remote").c_str(), (char *)"0");
+
+	if ("1" == isRemote) {
+		string enabled = qparam[serial + "|enable"];
+
+		if ("1" == enabled) {
+			dbset(("system.hardware.sundtek.stick." + serial + ".config.remote.enabled=1").c_str());
+			dbset(("system.hardware.sundtek.stick." + serial + ".config.remote.protocol=" + qparam[serial + "|protocol"]).c_str());
+			dbset(("system.hardware.sundtek.stick." + serial + ".config.remote.map=" + qparam[serial + "|map"]).c_str());
+		} else {
+			dbremove(("system.hardware.sundtek.stick." + serial + ".config.remote").c_str());
+			dbset(("system.hardware.sundtek.stick." + serial + ".config.remote.enabled=0").c_str());
+		}
+	}
+}
+
+
+string cmd = "/usr/bin/signal-event update-sundtek-remote";
+int ret = system( cmd.c_str() );
+
+success = "true"; //TODO: use ret to find out if we were successful.
+
+</%cpp>{
+    success: <$success$>
+}

@@ -360,6 +360,9 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
                   }, {
                     key : 'RC6',
                     title : 'RC6'
+                  }, {
+                    key : 'none',
+                    title : 'none'
                   }]
             });
 
@@ -374,17 +377,17 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
               autoLoad : true
             });
         this.mapStore.load();
-        
+
         YaVDR.Component.Settings.HwSundtek.LIRC.superclass.initComponent.call(this);
       },
       renderSundtek : function(item, serial, found) {
         // handle missing values
         item.config = item.config || {};
         item.config.remote = item.config.remote || {
-          enabled : 0,
-          protocol : 'RC5',
-          map : 'map_none'
+          enabled : 0
         };
+        item.config.remote.protocol = item.config.remote.protocol|| 'none';
+        item.config.remote.map = item.config.remote.map || 'none';
 
         var items = [];
         try {
@@ -399,10 +402,11 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
             }
 
             if (item.info.capabilities.remote == "1" && typeof item.info.ip == "undefined") {
-			  var combo = new Ext.form.ComboBox({
+              
+              var combo = new Ext.form.ComboBox({
                     itemId : serial + '|mapId',
                     name : serial + '|mapId',
-                    //tpl : this.mapTpl,
+                    // tpl : this.mapTpl,
                     hiddenName : serial + '|map',
                     valueField : 'key',
                     anchor : '100%',
@@ -414,11 +418,16 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
                     triggerAction : 'all',
                     fieldLabel : _('Key Map'),
                     selectOnFocus : true,
-                    value: item.config.remote.map,
-                    disabled : !found || item.config.remote.enabled == 0
+                    value : item.config.remote.map,
+                    disabled : !found || item.config.remote.enabled == 0,
+                    listeners : {
+                      afterrender : function(combobox) {
+                        var rec = combobox.store.getById(item.config.remote.map);
+                        combobox.setValue(rec.id);
+                      }
+                    }
                   });
-                  
-                  
+
               var selectionHidden = new Ext.form.Hidden({
                     name : serial + '|protocol',
                     disabled : !found
@@ -439,34 +448,33 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
                       afterrender : function(list) {
                         var rec = list.store.getById(protocolValue);
                         list.select(rec);
-
                       }
                     }
                   });
-                  
+
               items.push({
                     xtype : 'checkbox',
                     fieldLabel : _('remote enabled'),
-                    name : serial + '|remote',
-                    itemId : serial + '|remote',
-                    id : serial + '|remote',
+                    name : serial + '|enable',
+                    itemId : serial + '|enable',
+                    id : serial + '|enable',
                     inputValue : 1,
                     checked : (item.config.remote.enabled == 1),
                     disabled : !found,
-                    combo: combo,
-                    list: list,
-                    listeners: {
-                    	scope: this,
-        				check: function(cb, checked) {
-        					var parent = this.findParentByType('form');
-        					if (checked) {
-        						cb.combo.enable();
-        						cb.list.enable();
-        					} else {
-        						cb.combo.disable();
-        						cb.list.disable();
-        					}
-        				}
+                    combo : combo,
+                    list : list,
+                    listeners : {
+                      scope : this,
+                      check : function(cb, checked) {
+                        var parent = this.findParentByType('form');
+                        if (checked) {
+                          cb.combo.enable();
+                          cb.list.enable();
+                        } else {
+                          cb.combo.disable();
+                          cb.list.disable();
+                        }
+                      }
                     }
                   });
 
@@ -523,5 +531,15 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
                 this.doLayout();
               }
             });
+      },
+      doSave : function() {
+        this.getForm().submit({
+              url : '/sundtek/set_lirc',
+              scope : this,
+              success : function(form, action) {
+                this.doLoad();
+              }
+            })
       }
+      ,
     });
