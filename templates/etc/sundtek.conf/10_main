@@ -4,8 +4,8 @@
 device_attach=/usr/bin/attach_sundtek.sh -d DEVID
 device_detach=/usr/bin/detach_sundtek.sh -d DEVID
 <?cs if:(item.info.capabilities.dvbt == "1" && item.info.capabilities.dvbc == "1" )?>initial_dvb_mode=<?cs var:item.mode ?><?cs /if ?><?cs /if ?>
-<?cs if:item.info.capabilities.ir_protocoll ?>ir_protocol=<?cs var:item.info.capabilities.ir_protocol ?><?cs else ?>#ir_protocol=[RC5|NEC|RC6]<?cs /if ?>
-<?cs if:item.info.capabilities.rcmap ?>rcmap=<?cs var:item.info.capabilities.rcmap ?><?cs else ?>rcmap=/lib/udev/rc_keymaps/sundtek-black<?cs /if ?>
-<?cs if:item.info.capabilities.ir_disabled == "1" ?>ir_disabled=1<?cs else ?>ir_disabled=0<?cs /if ?>
+<?cs if:item.config.remote.protocol ?>ir_protocol=<?cs var:item.config.remote.protocol ?><?cs else ?>#ir_protocol=[RC5|NEC|RC6]<?cs /if ?>
+<?cs if:item.config.remote.map ?>rcmap=<?cs var:item.config.remote.map ?><?cs else ?>rcmap=/lib/udev/rc_keymaps/sundtek-black<?cs /if ?>
+<?cs if:item.config.remote.enabled == "1" ?>ir_disabled=0<?cs else ?>ir_disabled=1<?cs /if ?>
 
 <?cs /each ?>
