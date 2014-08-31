@@ -361,6 +361,9 @@ YaVDR.Component.Settings.HwSundtek.LIRC = Ext.extend(YaVDR.Default.Form, {
                     key : 'RC6',
                     title : 'RC6'
                   }, {
+                    key : 'RC6A',
+                    title : 'RC6A'
+                  }, {
                     key : 'none',
                     title : 'none'
                   }]
