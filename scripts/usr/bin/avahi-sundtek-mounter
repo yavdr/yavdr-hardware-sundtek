@@ -166,7 +166,7 @@ class Config:
     def __init__(self):
         self.values = {}
         self.config = ConfigParser.ConfigParser()
-        self.config.readfp(open('/etc/default/avahi-mounter'))
+        self.config.readfp(open('/etc/default/avahi-sundtek'))
         self.config.read(['/var/lib/vdr/.avahi-mounter',
                   os.path.expanduser('~vdr/.avahi-mounter')])
 
