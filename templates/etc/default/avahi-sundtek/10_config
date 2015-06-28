@@ -1,1 +1,2 @@
-ENABLED=1
+[base]
+enabled=1
