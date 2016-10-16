@@ -1,0 +1,13 @@
+[Unit]
+Description=Sundtek MediaTV Pro driver
+After=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/opt/bin/mediasrv -d --pluginpath=/opt/bin
+ExecStartPost=-/usr/bin/vdr-dbus-send /Plugins/sundtek plugin.Service string:'sundtek-Monitor-v0.1' string:'start'
+ExecStop=/opt/bin/mediaclient --shutdown
+ExecStop=-/usr/bin/vdr-dbus-send /Plugins/sundtek plugin.Service string:'sundtek-Monitor-v0.1' string:'stop'
+
+[Install]
+WantedBy=multi-user.target
